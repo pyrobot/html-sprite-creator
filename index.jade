@@ -4,7 +4,7 @@ html(lang="en")
     title Sprite Creator
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css', rel='stylesheet')
-    //- link(href='//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css', rel='stylesheet')
+    link(href='//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css', rel='stylesheet')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js')
     link(rel='stylesheet', href='app.css')
     script(src='app.min.js')
@@ -16,8 +16,10 @@ html(lang="en")
         li: a(href='#') Animate
         li: a(href='#') Export
     .container-fluid.app
-      .row-fluid: .span12.file-upload: input(type="file")
+      .row-fluid.upload-area: .span12.file-upload: input(type="file")
       .row-fluid
-        section.span2.sidebar.nav-buttons
-        main.span10.main
+        section.span1.sidebar.nav-buttons
+          a.btn.btn-large.btn-primary(onclick='setMode("move", this)'): i.icon-move
+          a.btn.btn-large.btn-primary(onclick='setMode("draw", this)'): i.icon-pencil
+        main.span11.main
           .draw-area

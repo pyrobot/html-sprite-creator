@@ -1,12 +1,8 @@
 @import "nib"
 
 .nav-buttons {
-  padding: 5px
-  background-color: #f8f8f8
-  border: 1px dashed #000
-  border-radius: 5px
-  button {
-    margin-right: 5px
+  a {
+    margin: 5px
   }
   margin-bottom: 15px
 }
@@ -20,22 +16,55 @@
 }
 
 .draw-area {
+  position: relative
+  overflow: hidden
   user-select: none
   background-color: #f8f8f8
   border: 1px dashed #000
   border-radius: 5px
-  overflow: hidden
 }
-
+f
 .draw-item {
-  transition: 300ms
-  background-color: white
+  // transition: 300ms
+  opacity: 1
+  background-color: red
   border: 2px solid black
+  cursor: pointer
   &:hover {
+    // opacity: 0.5
     box-shadow: 0 0 20px #000
   }
-
   &.selected {
+    z-index: 9999
+    opacity: 1
     box-shadow: 0 0 60px #3a3
+    background-color: green
+    cursor: move
+    .controls {
+      display: block
+    }
+  }
+
+  .controls {
+    display: none
+    position: absolute
+    right: -10px
+    top: 10px
+
+    a {
+      cursor: pointer
+      text-decoration: none
+      display: block
+      border-top: 2px solid #555
+      border-left: 2px solid #353535
+      border-right: 2px solid #353535
+      border-bottom: 2px solid #222
+      box-shadow: 1px 1px 5px #888
+      border-radius: 8px
+      width: 11px
+      padding: 5px 8px
+      margin-bottom: 5px 
+      background-color: white
+    }
   }
 }

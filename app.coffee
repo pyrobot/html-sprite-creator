@@ -1,6 +1,14 @@
 $ ->
   $win = $(window)
   $drawArea = $(".draw-area")
+  $fileUpload = $('[type="file"]')
+  controlsHTML = """
+  <div class='controls'>
+    <a onmousedown='$(this).parent().parent().remove();window.event.stopPropagation()'><i class='icon-trash'></i></a>
+    <a onmousedown='$(this).parent().parent().insertBefore($(this).parent().parent().prev());window.event.stopPropagation()'><i class='icon-arrow-up moveup'></i></a>
+    <a onmousedown='$(this).parent().parent().insertAfter($(this).parent().parent().next());window.event.stopPropagation()'><i class='icon-arrow-down movedown'></i></a>
+  </div>
+  """
 
   emptyDiv = -> $("<div></div>")
   drawAreafillHeight = -> $drawArea.css 'height', $win.height() - $drawArea.offset().top - 30
@@ -14,19 +22,33 @@ $ ->
     for item in allItems
       item.css 
         pointerEvents: "none"
-        cursor: ""
 
   makeSelectable = ->
     for item in allItems
       item.css 
         pointerEvents: "all"
-        cursor: "pointer"
 
   makeSelected = (item) -> 
     for i in allItems
       i.removeClass 'selected'
-
     $(item).addClass 'selected'
+
+  dragging = false
+  dragOffset = {x: 0, y: 0}
+  dragItem = null
+  startDrag = (e, el) ->
+    dragging = true
+    dragOffset.x = e.offsetX
+    dragOffset.y = e.offsetY 
+    dragItem = $(el)
+    makeUnselectable()
+    
+  drawMode = null
+  buttons = $('a.btn')
+  window.setMode = (mode, el) -> 
+    drawMode = mode
+    buttons.removeClass "active"
+    $(el).addClass "active"
 
   startPos = null
   endPos = null
@@ -36,10 +58,13 @@ $ ->
     currentItem = emptyDiv()
     element = currentItem[0]
 
+    dragging = false
+    dragItem = null
+    $('.selected').removeClass 'selected'
+    makeSelectable()
     makeUnselectable()
 
     currentItem.css
-      cursor: "default"
       pointerEvents: "none"
       position: "absolute"
       width: 0
@@ -52,6 +77,8 @@ $ ->
 
   $drawArea.on 'mousemove', (e) ->
     pos = x: e.offsetX, y: e.offsetY
+    if dragging then return dragItem[0].style['-webkit-transform'] = "translate(#{pos.x - dragOffset.x}px, #{pos.y - dragOffset.y}px)"
+
     if currentItem
       element = currentItem[0]
       left = Math.min(pos.x, startPos.x)
@@ -67,23 +94,46 @@ $ ->
         height: height
         
   cancelDrag = (e) -> 
+    if dragging
+      dragging = false
+      dragItem = null
+      makeSelectable()
+      return
+
     if currentItem
       if currentItem.width() < 10 and currentItem.height() < 10 
         currentItem.remove()
         currentItem = null
+        makeSelectable()
         return
 
       currentItem.mousedown (e) ->
-        makeSelected(this)
+        if $(this).is('.selected')
+          startDrag(e, this)
+        else
+          startDrag(e, this)
+          makeSelected(this)
         e.stopPropagation()
 
       currentItem.addClass 'draw-item'
-
+      $(controlsHTML).appendTo currentItem
 
       allItems.push currentItem
       currentItem = null
       makeSelectable()
 
-
-  # $drawArea.on 'mousee', cancelDrag
   $drawArea.on 'mouseup', cancelDrag
+
+  imageSource = null
+  $fileUpload.on 'change', (e) ->
+    reader = new FileReader()
+    reader.onload = (ev) ->
+      imageSource = $("<img></img>")
+        .attr("src", ev.target.result)
+        .css
+          position: "absolute"
+          pointerEvents: "none"
+        .appendTo $drawArea
+      window.imageSource = imageSource
+    reader.readAsDataURL(e.target.files[0])
+    $(".upload-area").hide()
