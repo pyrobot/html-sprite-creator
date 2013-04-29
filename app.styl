@@ -1,0 +1,41 @@
+@import "nib"
+
+.nav-buttons {
+  padding: 5px
+  background-color: #f8f8f8
+  border: 1px dashed #000
+  border-radius: 5px
+  button {
+    margin-right: 5px
+  }
+  margin-bottom: 15px
+}
+
+.file-upload {
+  padding: 15px 15px 5px 15px
+  background-color: #f8f8f8
+  border: 1px dashed #000
+  border-radius: 5px
+  margin-bottom: 15px
+}
+
+.draw-area {
+  user-select: none
+  background-color: #f8f8f8
+  border: 1px dashed #000
+  border-radius: 5px
+  overflow: hidden
+}
+
+.draw-item {
+  transition: 300ms
+  background-color: white
+  border: 2px solid black
+  &:hover {
+    box-shadow: 0 0 20px #000
+  }
+
+  &.selected {
+    box-shadow: 0 0 60px #3a3
+  }
+}
